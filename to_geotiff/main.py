@@ -16,10 +16,10 @@ prof = pro.readproj(file)
 file.seek(511, 0)
 
 data = np.fromfile(file, dtype='uint16')
-data = (data * prof['coeff_a']) + prof['coeff_b']
-data = data.astype(np.uint16)
+data = ((data / 256) * prof['coeff_a']) + prof['coeff_b']
 data = data.reshape(prof['lines'], prof['pixels'])
 data = np.flipud(data)
+
 
 lon = prof['longtitude']
 lat = prof['latitude']
