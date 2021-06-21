@@ -1,5 +1,3 @@
-from rasterio.enums import ColorInterp
-from rasterio.transform import Affine
 import proformat.readpro as pro
 from rasterio.plot import show
 from pyproj import Transformer
