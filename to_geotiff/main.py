@@ -52,7 +52,14 @@ def affine_matrix(pro_passport):
 
 
 # Функция для создания GeoTIFF файла из файла с форматом .pro.
-def create_geotiff(file_name, data, affine_mat, pro_passport):
+def create_geotiff(file_name):
+    pro_file_name = sys.argv[1] # Считываем имя файла в формате .pro с консоли.
+    pro_file = open(pro_file_name, 'rb')
+
+    pro_passport = parse_pro_passport(pro_file)
+    data = parse_pro_data(pro_file, pro_passport)
+    affine_mat = affine_matrix(pro_passport)
+    
     file_name += '.tif'
     geotiff = rasterio.open(                          # Создаем GeoTIFF файл.
                     file_name, 'w', driver='GTiff', 
@@ -64,11 +71,4 @@ def create_geotiff(file_name, data, affine_mat, pro_passport):
     geotiff.close()
 
 
-pro_file_name = sys.argv[1] # Считываем имя файла в формате .pro с консоли.
-pro_file = open(pro_file_name, 'rb')
-
-pro_passport = parse_pro_passport(pro_file)
-data = parse_pro_data(pro_file, pro_passport)
-
-affine_mat = affine_matrix(pro_passport)
-create_geotiff('geotiff_file', data, affine_mat, pro_passport)
+create_geotiff('geotiff_file')
