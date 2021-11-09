@@ -71,4 +71,4 @@ def create_geotiff(file_name):
     geotiff.close()
 
 
-create_geotiff('geotiff_file')
+create_geotiff(sys.argv[2])
