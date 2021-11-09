@@ -2,14 +2,15 @@ import pycstruct
 
 
 # Функция для побитового считывания паспорта файла .pro.
+# Подробное описание паспорта и самого формата .pro, можно найти на сайте: http://www.satellite.dvo.ru/gate.html?name=Content&pa=showpage&pid=14
 def readproj(file):
     file.seek(62, 0) # Переносим указатель 62 бита, чтобы определить тип данных файла .pro.
     type = int.from_bytes(file.read(1), 'little') # Считываем бит занятый под оперделение типа фала .pro.
-    file.seek(0) # Переносим указатель в начало файла.
+    file.seek(0)
     
     if type == 1:
         # Raw data
-        pro_rawdata = pycstruct.StructDef(default_byteorder='little') # Определяем структуру памяти объекта.
+        pro_rawdata = pycstruct.StructDef(default_byteorder='little')
 
         # Main part
         pro_rawdata.add('uint8', 'format_type')
@@ -63,12 +64,12 @@ def readproj(file):
         pro_rawdata.add('uint8', 'geo_reserve', length=226)
 
         # Deserialize
-        pro = pro_rawdata.deserialize(file.read()) # Преобразовываем массив байтов в словарь языка программирования Python.
+        pro = pro_rawdata.deserialize(file.read()) # Преобразовываем массив байтов в словарь языка программирования Python, для простоты работы со структурой.
 
         return pro
     elif type == 2:
         # Single-channel data
-        pro_single_channel = pycstruct.StructDef(default_byteorder='little') # Определяем структуру памяти объекта.
+        pro_single_channel = pycstruct.StructDef(default_byteorder='little')
 
         # Main part
         pro_single_channel.add('uint8', 'format_type')
@@ -121,12 +122,12 @@ def readproj(file):
         pro_single_channel.add('uint8', 'geo_reserve', length=226)
 
         # Deserialize
-        pro =  pro_single_channel.deserialize(file.read()) # Преобразовываем массив байтов в словарь языка программирования Python.
+        pro =  pro_single_channel.deserialize(file.read()) # Преобразовываем массив байтов в словарь языка программирования Python, для простоты работы со структурой.
 
         return pro
     elif type == 3:
         # Projections data
-        pro_projection = pycstruct.StructDef(default_byteorder='little') # Определяем структуру памяти объекта.
+        pro_projection = pycstruct.StructDef(default_byteorder='little')
 
         # Main part
         pro_projection.add('uint8', 'format_type')
@@ -185,12 +186,12 @@ def readproj(file):
         pro_projection.add('uint8', 'geo_reserve', length=226)
 
         # Deserialize
-        pro = pro_projection.deserialize(file.read()) # Преобразовываем массив байтов в словарь языка программирования Python.
+        pro = pro_projection.deserialize(file.read()) # Преобразовываем массив байтов в словарь языка программирования Python, для простоты работы со структурой.
         
         return pro
     else:
         # Telemetry data
-        pro_telemetry = pycstruct.StructDef(default_byteorder='little') # Определяем структуру памяти объекта.
+        pro_telemetry = pycstruct.StructDef(default_byteorder='little')
 
         # Main part
         pro_telemetry.add('uint8', 'format_type')
@@ -211,6 +212,6 @@ def readproj(file):
         pro_telemetry.add('uint8', 'avhrr_reserve', length=444)
 
         # Deserialize
-        pro = pro_telemetry.deserialize(file.read()) # Преобразовываем массив байтов в словарь языка программирования Python.
+        pro = pro_telemetry.deserialize(file.read()) # Преобразовываем массив байтов в словарь языка программирования Python, для простоты работы со структурой.
 
         return pro
