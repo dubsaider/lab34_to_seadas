@@ -14,17 +14,22 @@ def parse_pro_passport(file):
 
 # Функция для считывания растровых данных и приведению данных к физическим величинам.
 def parse_pro_data(file, pro_passport):
-    file.seek(511, 0)
-    data = np.fromfile(file, dtype='uint16') # Считывание данных производим в uint16, так файл .pro является двухбайтовым.
+    file.seek(512, 0)
+    data = np.fromfile(file, dtype='<i2')
 
     a = pro_passport['coeff_a']
     b = pro_passport['coeff_b']
     rows = pro_passport['lines']
     cols = pro_passport['pixels']
 
-    data = ((data / 256) * a) + b # Приведение растровых данных к физическим величинам, чтобы данные отражали характеристики полученного продукта.
+    data = data * a + b  # Приведение растровых данных к физическим величинам, чтобы данные отражали характеристики полученного продукта.
     data = data.reshape(rows, cols)
     
+    # До преобразования:
+    # -5 : нет данных
+    # -7 : земля
+    data[data < 0] = np.nan
+
     return np.flipud(data) # Переворачиваем массив по веритали, для более привычного отображенияю.
 
 
