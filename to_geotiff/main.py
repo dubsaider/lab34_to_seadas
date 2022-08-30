@@ -79,7 +79,9 @@ def create_geotiff(file_name):
                 driver='GTiff',
                 height=pro_passport['lines'], width=pro_passport['pixels'],
                 count=1, dtype=data.dtype,
-                crs='EPSG:3395', transform=affine_mat) as geotiff:
+                crs='EPSG:3395', transform=affine_mat,
+                compress='deflate', num_threads='all_cpus'
+                ) as geotiff:
             geotiff.write(data, 1)
             geotiff.write_mask(data > 0)
 
