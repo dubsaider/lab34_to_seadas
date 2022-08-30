@@ -22,13 +22,20 @@ def parse_pro_data(file, pro_passport):
     rows = pro_passport['lines']
     cols = pro_passport['pixels']
 
-    data = data * a + b  # Приведение растровых данных к физическим величинам, чтобы данные отражали характеристики полученного продукта.
-    data = data.reshape(rows, cols)
-    
-    # До преобразования:
-    # -5 : нет данных
-    # -7 : земля
-    data[data < 0] = np.nan
+    data_scaled = data * a + b  # Приведение растровых данных к физическим величинам, чтобы данные отражали характеристики полученного продукта.
+
+    # Восстановим отрицательные (специальные) значения до применения
+    # коэффициентов приведения, чтобы сохранить их для возможной
+    # дальнейшей обработки.  При записи файла будет также записана
+    # nodata маска, которая будет построена по знаку значения.
+
+    # Известные (мне) специальные значения:
+    # -5   : облака
+    # -7   : земля
+    # -100 : ???
+    data_scaled[data < 0] = data[data < 0]
+
+    data = data_scaled.reshape(rows, cols)
 
     return np.flipud(data) # Переворачиваем массив по веритали, для более привычного отображенияю.
 
@@ -64,16 +71,16 @@ def create_geotiff(file_name):
     pro_passport = parse_pro_passport(pro_file)
     data = parse_pro_data(pro_file, pro_passport)
     affine_mat = affine_matrix(pro_passport)
-    
+
     file_name += '.tif'
-    geotiff = rasterio.open(                          # Создаем GeoTIFF файл.
-                    file_name, 'w', driver='GTiff', 
-                    height=pro_passport['lines'], width=pro_passport['pixels'], 
-                    count=1, dtype=data.dtype, 
-                    crs='EPSG:3395', transform=affine_mat)
-
-    geotiff.write(data, 1)
-    geotiff.close()
-
+    with rasterio.Env(GDAL_TIFF_INTERNAL_MASK=True):
+        with rasterio.open(
+                file_name, 'w',
+                driver='GTiff',
+                height=pro_passport['lines'], width=pro_passport['pixels'],
+                count=1, dtype=data.dtype,
+                crs='EPSG:3395', transform=affine_mat) as geotiff:
+            geotiff.write(data, 1)
+            geotiff.write_mask(data > 0)
 
 create_geotiff(sys.argv[2])
