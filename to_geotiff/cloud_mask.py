@@ -17,6 +17,7 @@ def parse_pro_data(file, pro_passport):
     data_scaled[data_scaled == -50.0] = np.nan
 
     data_scaled[data_scaled > -1] = np.nan
+    data_scaled[data_scaled < -1] = 1
     data = data_scaled.reshape(rows, cols)
 
     return np.flipud(data)
