@@ -32,3 +32,11 @@ Run script in Python enviroment.
 ```bash
 python main.py "path to file .pro" "name of output file"
 ```
+
+## Cloud mask script
+
+Run script in Python enviroment.
+
+```bash
+python main.py "path to file .pro" "name of output file" "cloud temperature threshold"
+```
