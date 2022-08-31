@@ -38,5 +38,5 @@ python main.py "path to file .pro" "name of output file"
 Run script in Python enviroment.
 
 ```bash
-python main.py "path to file .pro" "name of output file" "cloud temperature threshold"
+python cloud_mask.py "path to file .pro" "name of output file" "cloud temperature threshold"
 ```
