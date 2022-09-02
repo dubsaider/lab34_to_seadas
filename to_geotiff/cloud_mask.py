@@ -16,8 +16,8 @@ def parse_pro_data(file, pro_passport):
     data_scaled = data * a + b
     data_scaled[data_scaled == -50.0] = 0
 
-    data_scaled[data_scaled > sys.argv[3]] = 0
-    data_scaled[data_scaled < sys.argv[3]] = data_scaled[data_scaled < sys.argv[3]] + 255
+    data_scaled[data_scaled > int(sys.argv[3])] = 0
+    data_scaled[data_scaled < int(sys.argv[3])] = data_scaled[data_scaled < int(sys.argv[3])] + 255
     
     alpha = data_scaled.copy()
     alpha_map = sorted(np.unique(alpha[data > 0]))
